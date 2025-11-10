@@ -6,6 +6,7 @@ public class ExplosiveTimer : MonoBehaviour
 {
     public TMP_Text Timer;
     public float countdownTime = 60f;
+    public BoxCollider BoxCollider;
 
     private Coroutine timerCoroutine;
     private bool timerStopped = false;
@@ -16,6 +17,8 @@ public class ExplosiveTimer : MonoBehaviour
         if (timerCoroutine != null) StopCoroutine(timerCoroutine); // stop existing timer
         timerCoroutine = StartCoroutine(Countdown());
         timerStopped = false;
+        BoxCollider.enabled = true;
+
     }
 
     IEnumerator Countdown()

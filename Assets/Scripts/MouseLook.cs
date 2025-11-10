@@ -3,7 +3,12 @@ using UnityEngine.InputSystem;
 
 public class MouseLook : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+  
+    [Header("Aiming")]
+    public float aimSensitivityX = 1.5f;
+    public float aimSensitivityY = 1.5f;
+    public float normalSensitivityX = 3f;
+    public float normalSensitivityY = 3f;
 
     public enum RotationAxis
     {
@@ -11,6 +16,11 @@ public class MouseLook : MonoBehaviour
         MouseX = 1,
         MouseY = 2
 
+    }
+    public void SetAiming(bool isAiming)
+    {
+        sensitivityX = isAiming ? aimSensitivityX : normalSensitivityX;
+        sensitivityY = isAiming ? aimSensitivityY : normalSensitivityY;
     }
 
     public RotationAxis axis = RotationAxis.MouseXAndMouseY;
@@ -73,4 +83,3 @@ public class MouseLook : MonoBehaviour
 
 
 }
-

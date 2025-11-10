@@ -110,8 +110,9 @@ public class PatrolEnemy : MonoBehaviour
             }
         }
         // play moving anim if applicable
-        anim.SetFloat("Moving", agent.velocity.sqrMagnitude);
         */
+        anim.SetFloat("Moving", agent.velocity.sqrMagnitude);
+        
     }
 
     

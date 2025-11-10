@@ -153,7 +153,7 @@ public class RayCastFromPlayer : MonoBehaviour
                     WiresAreCut();
 
                 }
-                else if (hit.collider.CompareTag("DoorButton") && KeyCard2InInventory)
+                else if (hit.collider.CompareTag("DoorButton2") && KeyCard2InInventory)
                 {
                     puzzleDoor2.SetActive(false);
                 }

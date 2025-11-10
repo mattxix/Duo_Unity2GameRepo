@@ -26,16 +26,19 @@ public class Pickup : MonoBehaviour
             {
                 Destroy(targetPickupObject);
                 RayCastScript.HaveWireCutters();
+                Debug.Log("PickedUpWireCutters");
             }
             else if (targetPickupObject.CompareTag("KeyCard1"))
             {
                 Destroy(targetPickupObject);
                 RayCastScript.HaveKeyCard1();
+                Debug.Log("PickedUpKeyCard1");
             }
             else if(targetPickupObject.CompareTag("KeyCard2"))
             {
                 Destroy(targetPickupObject);
                 RayCastScript.HaveKeyCard2();
+                Debug.Log("PickedUpKeyCard2");
             }
 
 
