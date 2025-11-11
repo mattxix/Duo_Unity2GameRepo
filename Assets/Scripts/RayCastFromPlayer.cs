@@ -36,6 +36,7 @@ public class RayCastFromPlayer : MonoBehaviour
     [Header("Core")]
     public GameObject C4;
     public ExplosiveTimer ExplosiveTimer;
+    public ElevatorScript ElevatorScript;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -162,6 +163,10 @@ public class RayCastFromPlayer : MonoBehaviour
                     C4.SetActive(true);
                     ExplosiveTimer.StartExplosionTimer();
                     Debug.Log("c4Planted");
+                }
+                else if (hit.collider.CompareTag("Lever"))
+                {
+                    ElevatorScript.ToggleElevator();
                 }
 
             }

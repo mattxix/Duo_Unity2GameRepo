@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class ElevatorScript : MonoBehaviour
 {
+
+    public Animator leverAnim;
+    public Animator elevatorAnim;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,8 +19,8 @@ public class ElevatorScript : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void ToggleElevator()
     {
-        
+        elevatorAnim.SetTrigger("Toggle");
     }
 }

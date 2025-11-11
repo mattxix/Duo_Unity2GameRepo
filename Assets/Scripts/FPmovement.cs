@@ -15,6 +15,7 @@ public class FPmovement : MonoBehaviour
     public float jumpStrength = 10.0f;
     float velocity;
     float gravityMultiplier = 3;
+    
 
 
 
@@ -24,13 +25,14 @@ public class FPmovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         float moveX = h * speed;
         float moveZ = v * speed;
         Vector3 movement = new Vector3(moveX, 0, moveZ);
         movement = Vector3.ClampMagnitude(movement, speed);
+
 
         if (IsGrounded() && velocity < 0)
         {
@@ -46,6 +48,7 @@ public class FPmovement : MonoBehaviour
         movement = transform.TransformDirection(movement);
         controller.Move(movement);
     }
+
 
     public void MoveInput(InputAction.CallbackContext ctx)
     {
