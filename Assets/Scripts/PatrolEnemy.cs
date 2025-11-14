@@ -32,24 +32,25 @@ public class PatrolEnemy : MonoBehaviour
     bool CanSeePlayer()
     {
         //Check if view in range
-        if (Vector3.Distance(eye.position, target.position) < viewDistance)
-        {
-            //Check if view in angle
-            Vector3 playerDirection = (target.position - eye.position).normalized;
-            float angleDifference = Vector3.Angle(eye.forward, playerDirection);
-            if (angleDifference < viewAngle/2)
-            {
-                //Check if nothing is in the way
-                if(!Physics.Linecast(eye.position, target.position, ~playerMask))
-                {
-                    // Enemy sees player
-                    lastPosition = target.position;
-                    return true;
-                }
-            }
+        //if (Vector3.Distance(eye.position, target.position) < viewDistance)
+        //{
+        //    //Check if view in angle
+        //    Vector3 playerDirection = (target.position - eye.position).normalized;
+        //    float angleDifference = Vector3.Angle(eye.forward, playerDirection);
+        //    if (angleDifference < viewAngle/2)
+        //    {
+        //        //Check if nothing is in the way
+        //        if(!Physics.Linecast(eye.position, target.position, ~playerMask))
+        //        {
+        //            // Enemy sees player
+        //            lastPosition = target.position;
+        //            return true;
+        //        }
+        //    }
 
-        }
-        return false;
+        //}
+        //return false;
+        return true;
     }
 
     // Update is called once per frame

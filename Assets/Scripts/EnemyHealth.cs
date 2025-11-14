@@ -7,6 +7,7 @@ public class EnemyHealth : MonoBehaviour
     public float enemyHealth = 100;
     public float currentHealth;
     public GameObject healthBarParent;
+    public DropKeyCard dropKeyCardScript;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -32,6 +33,10 @@ public class EnemyHealth : MonoBehaviour
 
     void Dead()
     {
+        if (gameObject.name == "RobotGuardEnemy")
+        {
+            dropKeyCardScript.DropKeyCard1();
+        }
         Destroy(healthBarParent);
         Destroy(gameObject);
     }

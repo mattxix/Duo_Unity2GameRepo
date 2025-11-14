@@ -10,6 +10,7 @@ public class RayCastFromPlayer : MonoBehaviour
     public float raycastDistance = 5.0f;
     bool holdingItem = false;
     GameObject heldObject;
+    public EnemySpawner EnemySpawner;
 
     [Header("Room1")]
     public GameObject doorButton1;
@@ -147,6 +148,7 @@ public class RayCastFromPlayer : MonoBehaviour
                 if (hit.collider.CompareTag("DoorButton") && door1Unlocked && KeyCard1InInventory)
                 {
                     puzzleDoor1.SetActive(false);
+                    EnemySpawner.currentRoom = 2;
 
                 }
                 else if (hit.collider.CompareTag("WirePanel") && wireCuttersInInventory )
@@ -157,12 +159,14 @@ public class RayCastFromPlayer : MonoBehaviour
                 else if (hit.collider.CompareTag("DoorButton2") && KeyCard2InInventory)
                 {
                     puzzleDoor2.SetActive(false);
+                    EnemySpawner.currentRoom = 3;
                 }
                 else if(hit.collider.CompareTag("C4Location"))
                 {
                     C4.SetActive(true);
                     ExplosiveTimer.StartExplosionTimer();
                     Debug.Log("c4Planted");
+                    EnemySpawner.currentRoom = 4;
                 }
                 else if (hit.collider.CompareTag("Lever"))
                 {
