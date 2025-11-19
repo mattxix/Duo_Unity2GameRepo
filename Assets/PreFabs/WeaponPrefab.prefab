@@ -387,7 +387,8 @@ MonoBehaviour:
   aimFOV: 55
   normalFOV: 85
   fovSpeed: 10
-  lookScript: {fileID: 0}
+  lookScriptCamera: {fileID: 0}
+  lookScriptPlayer: {fileID: 0}
   reloadBar: {fileID: 22793568301385983}
   fillSpeed: 1
 --- !u!82 &988634657205407025

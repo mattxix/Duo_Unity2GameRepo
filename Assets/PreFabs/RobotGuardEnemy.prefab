@@ -368,6 +368,7 @@ MonoBehaviour:
   enemyHealth: 250
   currentHealth: 0
   healthBarParent: {fileID: 2850818716452604002}
+  dropKeyCardScript: {fileID: 0}
 --- !u!1 &7499198761410151781
 GameObject:
   m_ObjectHideFlags: 0
