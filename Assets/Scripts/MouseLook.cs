@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class MouseLook : MonoBehaviour
 {
-  
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     [Header("Aiming")]
     public float aimSensitivityX = 1.5f;
     public float aimSensitivityY = 1.5f;

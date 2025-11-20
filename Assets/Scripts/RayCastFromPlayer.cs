@@ -14,7 +14,11 @@ public class RayCastFromPlayer : MonoBehaviour
 
     [Header("Room1")]
     public GameObject doorButton1;
-    public GameObject puzzleDoor1;
+    //public GameObject puzzleDoor1;
+    public GameObject wireBoxUncut;
+    public GameObject wireBoxCut;
+    public Light statusLight1;
+    public Animator anim1;
     bool wireCuttersInInventory = false;
     bool wiresCut = false;
     bool KeyCard1InInventory = false;
@@ -22,13 +26,16 @@ public class RayCastFromPlayer : MonoBehaviour
 
     [Header("Room2")]
     public GameObject doorButton2;
-    public GameObject puzzleDoor2;
+    //public GameObject puzzleDoor2;
+    public Light statusLight2;
+    public Animator anim2;
     //bool door2Unlocked = false;
     bool KeyCard2InInventory = false;
 
     [Header("Room3")]
+    public Animator anim3;
     //public GameObject doorButton3;
-    public GameObject puzzleDoor3;
+    //public GameObject puzzleDoor3;
     public bool Cube;
     public bool Cylinder;
     public bool Prism;
@@ -51,23 +58,27 @@ public class RayCastFromPlayer : MonoBehaviour
         //Debug.DrawRay(transform.position, transform.forward * raycastDistance, Color.green);
         if (wiresCut && KeyCard1InInventory)
         {
-            doorButton1.GetComponent<Renderer>().material.color = Color.green;
+            statusLight1.color = Color.green;
+            //doorButton1.GetComponent<Renderer>().material.color = Color.green;
             door1Unlocked = true;
         }
         else
         {
-            doorButton1.GetComponent<Renderer>().material.color = Color.red;
+            statusLight1.color = Color.red;
+            //doorButton1.GetComponent<Renderer>().material.color = Color.red;
             door1Unlocked = false;
         }
 
         if (KeyCard2InInventory)
         {
-            doorButton2.GetComponent<Renderer>().material.color = Color.green;
+            statusLight2.color = Color.green;
+            //doorButton2.GetComponent<Renderer>().material.color = Color.green;
             //door2Unlocked = true;
         }
         else
         {
-            doorButton2.GetComponent<Renderer>().material.color = Color.red;
+            statusLight2.color = Color.red;
+            //doorButton2.GetComponent<Renderer>().material.color = Color.red;
             //door2Unlocked = false;
         }
 
@@ -76,19 +87,22 @@ public class RayCastFromPlayer : MonoBehaviour
         {
             //doorButton3.GetComponent<Renderer>().material.color = Color.green;
             //door3Unlocked = true;
-            puzzleDoor3.SetActive(false);
+            //puzzleDoor3.SetActive(false);
+            anim3.SetTrigger("OpenDoor");
         }
         else
         {
             //doorButton3.GetComponent<Renderer>().material.color = Color.red;
             //door3Unlocked = false;
-            puzzleDoor3.SetActive(true);
+            //puzzleDoor3.SetActive(true);
         }
     }
 
     public void WiresAreCut()
     {
         wiresCut = true;
+        wireBoxCut.SetActive(true);
+        wireBoxUncut.SetActive(false);
     }
 
     public void HaveWireCutters()
@@ -147,18 +161,20 @@ public class RayCastFromPlayer : MonoBehaviour
             {
                 if (hit.collider.CompareTag("DoorButton") && door1Unlocked && KeyCard1InInventory)
                 {
-                    puzzleDoor1.SetActive(false);
+                    //puzzleDoor1.SetActive(false);
+                    anim1.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 2;
 
                 }
                 else if (hit.collider.CompareTag("WirePanel") && wireCuttersInInventory )
                 {
                     WiresAreCut();
-
+                    Debug.Log("Cut");
                 }
                 else if (hit.collider.CompareTag("DoorButton2") && KeyCard2InInventory)
                 {
-                    puzzleDoor2.SetActive(false);
+                    //puzzleDoor2.SetActive(false);
+                    anim2.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 3;
                 }
                 else if(hit.collider.CompareTag("C4Location"))
