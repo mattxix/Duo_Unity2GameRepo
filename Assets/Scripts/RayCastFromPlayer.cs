@@ -9,7 +9,7 @@ public class RayCastFromPlayer : MonoBehaviour
 
     public float raycastDistance = 5.0f;
     bool holdingItem = false;
-    GameObject heldObject;
+    public GameObject heldObject;
     public EnemySpawner EnemySpawner;
 
     [Header("Room1")]
