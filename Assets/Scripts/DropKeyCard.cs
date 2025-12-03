@@ -7,9 +7,9 @@ public class DropKeyCard : MonoBehaviour
 
     public void DropKeyCard1()
     {
+        Debug.Log("droppedKeycard1");
         KeyCard1.position = targetTransform.position;
         KeyCard1.rotation = targetTransform.rotation;
-
     }
 
 }

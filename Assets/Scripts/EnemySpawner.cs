@@ -124,9 +124,6 @@ public class EnemySpawner : MonoBehaviour
         PatrolEnemy ai = newEnemy.GetComponent<PatrolEnemy>();
         if (ai != null)
             ai.target = player;
-    }
-
-   
-    
+    } 
 
 }
