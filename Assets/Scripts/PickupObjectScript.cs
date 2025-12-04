@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PickupObjectScript : MonoBehaviour
 {
-
     bool pickedUp = false;
     Rigidbody rb;
     public Transform destinationObject;

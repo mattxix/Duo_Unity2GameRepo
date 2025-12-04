@@ -3,7 +3,7 @@ using UnityEngine;
 public class TriggerPlate : MonoBehaviour
 {
     public RayCastFromPlayer raycastScript;
-
+    public Animator anim;
     public string objTag;         
     public string requiredName;
 
@@ -22,25 +22,11 @@ public class TriggerPlate : MonoBehaviour
                 TrySnap(other.gameObject);
             }
 
-            if (requiredName == "CubeMedallion") raycastScript.Cube = true;
-            if (requiredName == "CylinderMedallion") raycastScript.Cylinder = true;
-            if (requiredName == "PrismMedallion") raycastScript.Prism = true;
+            //if (requiredName == "CubeMedallion") raycastScript.Cube = true;
+            //if (requiredName == "CylinderMedallion") raycastScript.Cylinder = true;
+            //if (requiredName == "PrismMedallion") raycastScript.Prism = true;
 
             Debug.Log("placed");
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag(objTag)) return;
-
-        if (other.name.StartsWith(requiredName))
-        {
-            if (requiredName == "CubeMedallion") raycastScript.Cube = false;
-            if (requiredName == "CylinderMedallion") raycastScript.Cylinder = false;
-            if (requiredName == "PrismMedallion") raycastScript.Prism = false;
-
-            Debug.Log("removed");
         }
     }
 
@@ -58,6 +44,10 @@ public class TriggerPlate : MonoBehaviour
             medallion.transform.position = snapPoint.position;
             medallion.transform.rotation = snapPoint.rotation;
 
+            if (requiredName == "CubeMedallion") raycastScript.Cube = true;
+            if (requiredName == "CylinderMedallion") raycastScript.Cylinder = true;
+            if (requiredName == "PrismMedallion") raycastScript.Prism = true;
+
             Rigidbody rb = medallion.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -65,6 +55,7 @@ public class TriggerPlate : MonoBehaviour
                 rb.angularVelocity = Vector3.zero;
                 rb.isKinematic = true;
             }
+            anim.SetTrigger("MSnapped");
 
             Debug.Log("Medallion snapped to snap point");
         }
