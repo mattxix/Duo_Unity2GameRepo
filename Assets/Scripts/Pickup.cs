@@ -1,10 +1,12 @@
 using UnityEngine;
+using static InventoryScript;
 
 public class Pickup : MonoBehaviour
 {
     ItemCollector collector; //Will be used for inventory later
     public GameObject targetPickupObject;
     public RayCastFromPlayer RayCastScript;
+    public InventoryScript inventoryScript;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,21 +29,26 @@ public class Pickup : MonoBehaviour
                 Destroy(targetPickupObject);
                 RayCastScript.HaveWireCutters();
                 Debug.Log("PickedUpWireCutters");
+                inventoryScript.PickupWireCutters();
             }
             else if (targetPickupObject.CompareTag("KeyCard1"))
             {
                 Destroy(targetPickupObject);
                 RayCastScript.HaveKeyCard1();
                 Debug.Log("PickedUpKeyCard1");
+                inventoryScript.PickupKeyCard1();
             }
             else if(targetPickupObject.CompareTag("KeyCard2"))
             {
                 Destroy(targetPickupObject);
                 RayCastScript.HaveKeyCard2();
                 Debug.Log("PickedUpKeyCard2");
+                inventoryScript.PickupKeyCard2();
             }
 
 
         }
     }
+
+ 
 }

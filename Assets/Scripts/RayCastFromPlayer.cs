@@ -1,12 +1,13 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Animations;
+using UnityEngine.InputSystem;
+using static InventoryScript;
 
 
 
 public class RayCastFromPlayer : MonoBehaviour
 {
-
+    public InventoryScript InventoryScript;
     public float raycastDistance = 5.0f;
     bool holdingItem = false;
     public GameObject heldObject;
@@ -122,34 +123,44 @@ public class RayCastFromPlayer : MonoBehaviour
     {
         if (ctx.performed)
         {
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance))
-            {
-                if (hit.collider.CompareTag("PickupItem"))
-                {
-                    PickupObjectScript pickup = hit.collider.GetComponent<PickupObjectScript>();
+            TryPickup();
+        }
 
-                    if (pickup != null)
-                    {
-                        pickup.PickUp();
-                        heldObject = hit.collider.gameObject;
-                        holdingItem = true;
-                    }
+        if (ctx.canceled)
+        {
+            DropItem();
+        }
+    }
+
+    void TryPickup()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance) && InventoryScript.currentSlot == 0)
+        {
+            if (hit.collider.CompareTag("PickupItem"))
+            {
+                PickupObjectScript pickup = hit.collider.GetComponent<PickupObjectScript>();
+
+                if (pickup != null)
+                {
+                    pickup.PickUp();
+                    heldObject = hit.collider.gameObject;
+                    holdingItem = true;
                 }
             }
         }
+    }
 
-        // DROP
-        if (ctx.canceled)
+    public void DropItem()
+    {
+        if (holdingItem && heldObject != null)
         {
-            if (holdingItem && heldObject != null)
-            {
-                heldObject.GetComponent<PickupObjectScript>().PickUp();
-                holdingItem = false;
-                heldObject = null;
-            }
+            heldObject.GetComponent<PickupObjectScript>().PickUp();
+            holdingItem = false;
+            heldObject = null;
         }
     }
+
 
 
     public void interactableObject(InputAction.CallbackContext ctx)
@@ -166,7 +177,7 @@ public class RayCastFromPlayer : MonoBehaviour
                     EnemySpawner.currentRoom = 2;
 
                 }
-                else if (hit.collider.CompareTag("WirePanel") && wireCuttersInInventory )
+                else if (hit.collider.CompareTag("WirePanel") && InventoryScript.WirecuttersEquipped())
                 {
                     WiresAreCut();
                     Debug.Log("Cut");
