@@ -56,7 +56,7 @@ public class WeaponScript : MonoBehaviour
 
     public void FireShot(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
+        if (ctx.performed && InventoryScript.currentSlot == 1)
         {
             audioSource.PlayOneShot(gunFireClip);
             anim.SetTrigger("Shoot");
@@ -68,7 +68,7 @@ public class WeaponScript : MonoBehaviour
 
     public void AimIn(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
+        if (ctx.performed && InventoryScript.currentSlot == 1)
         {
             isAiming = true;
             lookScriptCamera.SetAiming(true);
