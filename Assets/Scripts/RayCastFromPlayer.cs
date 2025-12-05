@@ -1,7 +1,10 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+using TMPro;
 using static InventoryScript;
+using static MedallionID;
 
 
 
@@ -12,6 +15,8 @@ public class RayCastFromPlayer : MonoBehaviour
     bool holdingItem = false;
     public GameObject heldObject;
     public EnemySpawner EnemySpawner;
+    public LayerMask medallionLayer;
+    public TextMeshProUGUI helpMessage;
 
     [Header("Room1")]
     public GameObject doorButton1;
@@ -20,7 +25,7 @@ public class RayCastFromPlayer : MonoBehaviour
     public GameObject wireBoxCut;
     public Light statusLight1;
     public Animator anim1;
-    bool wireCuttersInInventory = false;
+    //bool wireCuttersInInventory = false;
     bool wiresCut = false;
     bool KeyCard1InInventory = false;
     bool door1Unlocked = false;
@@ -97,6 +102,35 @@ public class RayCastFromPlayer : MonoBehaviour
             //door3Unlocked = false;
             //puzzleDoor3.SetActive(true);
         }
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance, medallionLayer))
+        {
+            // We are looking at a medallion
+            MedallionID medallion = hit.collider.GetComponentInParent<MedallionID>();
+            if (medallion != null)
+            {
+                OnLookAtMedallion();
+            }
+        }
+        else
+        {
+            helpMessage.text = "";
+        }
+    }
+    void OnLookAtMedallion()
+    {
+        if(InventoryScript.currentSlot == 0 && !holdingItem)
+        {
+            helpMessage.text = "left click to pickup";
+        }
+        else if (InventoryScript.currentSlot != 0 && !holdingItem)
+        {
+            helpMessage.text = "switch to open hand";
+        }
+        
+
+       
     }
 
     public void WiresAreCut()
@@ -106,10 +140,10 @@ public class RayCastFromPlayer : MonoBehaviour
         wireBoxUncut.SetActive(false);
     }
 
-    public void HaveWireCutters()
-    {
-        wireCuttersInInventory = true;
-    }
+    //public void HaveWireCutters()
+    //{
+    //    wireCuttersInInventory = true;
+    //}
     public void HaveKeyCard1()
     {
         KeyCard1InInventory = true;
@@ -135,21 +169,40 @@ public class RayCastFromPlayer : MonoBehaviour
     void TryPickup()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance) && InventoryScript.currentSlot == 0)
+        if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance)
+            && InventoryScript.currentSlot == 0)
         {
             if (hit.collider.CompareTag("PickupItem"))
             {
                 PickupObjectScript pickup = hit.collider.GetComponent<PickupObjectScript>();
+                MedallionID medallion = hit.collider.GetComponentInParent<MedallionID>();
 
-                if (pickup != null)
+                if (pickup != null && medallion != null)
                 {
                     pickup.PickUp();
                     heldObject = hit.collider.gameObject;
                     holdingItem = true;
+
+                    switch (medallion.type)
+                    {
+                        case MedallionID.MedallionType.Cube:
+                            InventoryScript.PickupMedallion("Cube");
+                            break;
+
+                        case MedallionID.MedallionType.Cylinder:
+                            InventoryScript.PickupMedallion("Cylinder");
+                            break;
+
+                        case MedallionID.MedallionType.Prism:
+                            InventoryScript.PickupMedallion("Prism");
+                            break;
+                    }
                 }
             }
         }
     }
+
+
 
     public void DropItem()
     {
@@ -158,6 +211,7 @@ public class RayCastFromPlayer : MonoBehaviour
             heldObject.GetComponent<PickupObjectScript>().PickUp();
             holdingItem = false;
             heldObject = null;
+            InventoryScript.PickupMedallion("None");
         }
     }
 
@@ -170,27 +224,30 @@ public class RayCastFromPlayer : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance))
             {
-                if (hit.collider.CompareTag("DoorButton") && door1Unlocked && KeyCard1InInventory)
+                if (hit.collider.CompareTag("DoorButton") && door1Unlocked && InventoryScript.KeyCardEquipped())
                 {
                     //puzzleDoor1.SetActive(false);
                     anim1.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 2;
-
+                    InventoryScript.KeyCardSwipped();
                 }
                 else if (hit.collider.CompareTag("WirePanel") && InventoryScript.WirecuttersEquipped())
                 {
                     WiresAreCut();
+                    InventoryScript.WireCuttersUsed();
                     Debug.Log("Cut");
                 }
-                else if (hit.collider.CompareTag("DoorButton2") && KeyCard2InInventory)
+                else if (hit.collider.CompareTag("DoorButton2") && InventoryScript.KeyCardEquipped())
                 {
                     //puzzleDoor2.SetActive(false);
                     anim2.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 3;
+                    InventoryScript.KeyCardSwipped();
                 }
-                else if(hit.collider.CompareTag("C4Location"))
+                else if(hit.collider.CompareTag("C4Location") && InventoryScript.C4Equipped())
                 {
                     C4.SetActive(true);
+                    InventoryScript.C4Planted();
                     ExplosiveTimer.StartExplosionTimer();
                     Debug.Log("c4Planted");
                     EnemySpawner.currentRoom = 4;

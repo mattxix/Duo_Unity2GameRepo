@@ -69,6 +69,18 @@ public class FPmovement : MonoBehaviour
         }
     }
 
+    public void Sprint(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)   
+        {
+            speed = 18f;
+        }
+        else if (ctx.canceled) 
+        {
+            speed = 10f;
+        }
+    }
+
 
     bool IsGrounded()
     {

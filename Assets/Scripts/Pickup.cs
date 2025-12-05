@@ -27,7 +27,7 @@ public class Pickup : MonoBehaviour
             if (targetPickupObject.CompareTag("WireCutters"))
             {
                 Destroy(targetPickupObject);
-                RayCastScript.HaveWireCutters();
+                //RayCastScript.HaveWireCutters();
                 Debug.Log("PickedUpWireCutters");
                 inventoryScript.PickupWireCutters();
             }

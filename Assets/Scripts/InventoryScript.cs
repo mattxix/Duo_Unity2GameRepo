@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class InventoryScript : MonoBehaviour
 {
@@ -19,6 +21,7 @@ public class InventoryScript : MonoBehaviour
     public GameObject keyCard1;
     public GameObject keyCard2;
 
+
     [Header("Medallions (Hand Slot)")]
     public GameObject medallionCube;
     public GameObject medallionCylinder;
@@ -34,6 +37,10 @@ public class InventoryScript : MonoBehaviour
     [Header("InventoryIcons")]
     public GameObject[] Slots;
 
+    [Header("InventoryIcons")]
+    public Image[] medallionImages;
+
+
     private enum MedallionType { None, Cube, Cylinder, Prism }
     private MedallionType heldMedallion = MedallionType.None;
 
@@ -43,7 +50,7 @@ public class InventoryScript : MonoBehaviour
     {
         SelectGun(); //Start with gun
         RebuildHotbar();
-
+        medallionImages[0].enabled = true;
     }
 
     void Update()
@@ -70,9 +77,17 @@ public class InventoryScript : MonoBehaviour
         activeSlotTypes.Add(HotbarItemType.Gun);
         Slots[1].SetActive(true);
 
-        // Slot 2 - C4 (always)
-        activeSlotTypes.Add(HotbarItemType.C4);
-        Slots[2].SetActive(true);
+        // Slot 2 - C4 (only if owned)
+        if (hasC4)
+        {
+            activeSlotTypes.Add(HotbarItemType.C4);
+            Slots[2].SetActive(true);
+        }
+        else
+        {
+            Slots[2].SetActive(false);
+        }
+
 
         // Slot 3 - Wirecutters (only if owned)
         if (hasWireCutters)
@@ -96,29 +111,34 @@ public class InventoryScript : MonoBehaviour
         if (slotIndex < 0 || slotIndex >= activeSlotTypes.Count)
             return;
 
+        // Check if the item in that slot is actually available
+        HotbarItemType type = activeSlotTypes[slotIndex];
+        if ((type == HotbarItemType.C4 && !hasC4) ||
+            (type == HotbarItemType.WireCutters && !hasWireCutters) ||
+            (type == HotbarItemType.KeyCard && !(hasKeyCard1 || hasKeyCard2)))
+        {
+            return; // do nothing if item is gone
+        }
+
         currentSlot = slotIndex;
         DisableAllItems();
 
-        switch (activeSlotTypes[slotIndex])
+        switch (type)
         {
             case HotbarItemType.Hand:
-                // No item to show
+                // Nothing to show
                 break;
-
             case HotbarItemType.Gun:
                 gun.SetActive(true);
                 RayCastScript.DropItem();
                 break;
-
             case HotbarItemType.C4:
                 c4.SetActive(true);
                 RayCastScript.DropItem();
                 break;
-
             case HotbarItemType.WireCutters:
                 wireCutters.SetActive(true);
                 break;
-
             case HotbarItemType.KeyCard:
                 if (hasKeyCard1)
                     keyCard1.SetActive(true);
@@ -127,6 +147,7 @@ public class InventoryScript : MonoBehaviour
                 break;
         }
     }
+
 
 
 
@@ -213,6 +234,7 @@ public class InventoryScript : MonoBehaviour
     // MEDALLION PICKUP (ONE AT A TIME)
     public void PickupMedallion(string type)
     {
+
         // have Hand selected
         if (currentSlot != 0)
         {
@@ -220,9 +242,33 @@ public class InventoryScript : MonoBehaviour
             return;
         }
 
-        if (type == "Cube") heldMedallion = MedallionType.Cube;
-        if (type == "Cylinder") heldMedallion = MedallionType.Cylinder;
-        if (type == "Prism") heldMedallion = MedallionType.Prism;
+        medallionImages[0].enabled = false;
+        medallionImages[1].enabled = false;
+        medallionImages[2].enabled = false;
+        medallionImages[3].enabled = false;
+
+        if (type == "Cube")
+        {
+            heldMedallion = MedallionType.Cube;
+            medallionImages[1].enabled = true;
+        }
+        else if (type == "Cylinder")
+        {
+            heldMedallion = MedallionType.Cylinder;
+            medallionImages[2].enabled = true;
+        }    
+        else if (type == "Prism")
+        {
+            heldMedallion = MedallionType.Prism;
+            medallionImages[3].enabled = true;
+        }
+        else
+        {
+            medallionImages[0].enabled = true;
+
+        }
+
+
 
         Debug.Log("Picked up " + heldMedallion + " Medallion");
 
@@ -243,5 +289,47 @@ public class InventoryScript : MonoBehaviour
         if (index >= 0 && index < activeSlotTypes.Count)
             return activeSlotTypes[index] == HotbarItemType.WireCutters;
         return false;
+    }
+
+    public void WireCuttersUsed()
+    {
+        hasWireCutters = false;
+        RebuildHotbar();
+        SelectSlot(1);
+    }
+
+    public bool KeyCardEquipped()
+    {
+        int index = InventoryScript.currentSlot;  // current selected slot
+        if (index >= 0 && index < activeSlotTypes.Count)
+            return activeSlotTypes[index] == HotbarItemType.KeyCard;
+        return false;
+    }
+
+    public void KeyCardSwipped()
+    {
+        if (hasKeyCard1)
+            hasKeyCard1 = false;
+        else if (hasKeyCard2)
+            hasKeyCard2 = false;
+        RebuildHotbar();
+        SelectSlot(1);
+
+    }
+    public bool C4Equipped()
+    {
+        int index = InventoryScript.currentSlot;  // current selected slot
+        if (index >= 0 && index < activeSlotTypes.Count)
+            return activeSlotTypes[index] == HotbarItemType.C4;
+        return false;
+    }
+    public void C4Planted()
+    {
+        hasC4 = false;
+        Slots[2].SetActive(false);
+        c4.SetActive(false);
+        RebuildHotbar();
+        SelectSlot(1);
+
     }
 }

@@ -15,6 +15,9 @@ TagManager:
   - C4Location
   - DoorButton2
   - Lever
+  - CubeMedallion
+  - CylinderMedallion
+  - PrismMedallion
   layers:
   - Default
   - TransparentFX
@@ -25,8 +28,8 @@ TagManager:
   - Player
   - Weapons
   - Prism
-  - 
-  - 
+  - IgnoreGlowLight
+  - medallionLayer
   - 
   - 
   - 
