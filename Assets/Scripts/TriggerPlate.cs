@@ -11,6 +11,11 @@ public class TriggerPlate : MonoBehaviour
     public Transform snapPoint;
     public float snapRadius = 0.5f;
 
+    [Header("Access Granted Sound")]
+    public AudioClip accessGrantedClip;
+    [Range(0f, 1f)]
+    public float accessGrantedVolume = 1f;
+
     private void OnTriggerStay(Collider other)
     {
         if (!other.CompareTag(objTag)) return;
@@ -56,6 +61,19 @@ public class TriggerPlate : MonoBehaviour
                 rb.isKinematic = true;
             }
             anim.SetTrigger("MSnapped");
+
+            if (raycastScript != null && raycastScript.Cube && raycastScript.Cylinder && raycastScript.Prism && !raycastScript.accessGrantedPlayed)
+            {
+                if (accessGrantedClip != null)
+                {
+                    Vector3 playPosition = snapPoint != null ? snapPoint.position : transform.position;
+                    AudioSource.PlayClipAtPoint(accessGrantedClip, playPosition, accessGrantedVolume);
+
+                }
+                raycastScript.accessGrantedPlayed = true;
+                Debug.Log("Access Granted");
+
+            }
 
             Debug.Log("Medallion snapped to snap point");
         }

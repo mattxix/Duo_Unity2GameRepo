@@ -10,6 +10,7 @@ using static MedallionID;
 
 public class RayCastFromPlayer : MonoBehaviour
 {
+    public Animator animAlarm;
     public InventoryScript InventoryScript;
     public float raycastDistance = 5.0f;
     bool holdingItem = false;
@@ -51,6 +52,9 @@ public class RayCastFromPlayer : MonoBehaviour
     public GameObject C4;
     public ExplosiveTimer ExplosiveTimer;
     public ElevatorScript ElevatorScript;
+
+    [HideInInspector]
+    public bool accessGrantedPlayed = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -138,6 +142,11 @@ public class RayCastFromPlayer : MonoBehaviour
         wiresCut = true;
         wireBoxCut.SetActive(true);
         wireBoxUncut.SetActive(false);
+
+        if (animAlarm != null)
+        {
+            animAlarm.SetBool("AlarmOff", true);
+        }
     }
 
     //public void HaveWireCutters()
