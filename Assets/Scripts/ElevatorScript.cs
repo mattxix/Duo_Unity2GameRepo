@@ -4,6 +4,7 @@ public class ElevatorScript : MonoBehaviour
 {
 
     public Animator leverAnim;
+    public Animator leverAnim2;
     public Animator elevatorAnim;
 
 
@@ -22,5 +23,7 @@ public class ElevatorScript : MonoBehaviour
     public void ToggleElevator()
     {
         elevatorAnim.SetTrigger("Toggle");
+        leverAnim.SetTrigger("Flip");
+        leverAnim2.SetTrigger("Flip");
     }
 }
