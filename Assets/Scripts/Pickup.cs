@@ -8,6 +8,11 @@ public class Pickup : MonoBehaviour
     public RayCastFromPlayer RayCastScript;
     public InventoryScript inventoryScript;
 
+    [Header("Audio")]
+    public AudioSource AudioSource;
+    public AudioClip PickupSound;
+    public float PickupSoundVolume = 2f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -45,7 +50,7 @@ public class Pickup : MonoBehaviour
                 Debug.Log("PickedUpKeyCard2");
                 inventoryScript.PickupKeyCard2();
             }
-
+            AudioSource.PlayOneShot(PickupSound, PickupSoundVolume);
 
         }
     }

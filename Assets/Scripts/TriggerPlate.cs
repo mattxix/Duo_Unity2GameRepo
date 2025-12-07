@@ -32,6 +32,7 @@ public class TriggerPlate : MonoBehaviour
             //if (requiredName == "PrismMedallion") raycastScript.Prism = true;
 
             Debug.Log("placed");
+            //raycastScript.noMessageState = false;
         }
     }
 

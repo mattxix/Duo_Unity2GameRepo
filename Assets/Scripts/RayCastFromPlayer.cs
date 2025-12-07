@@ -18,6 +18,7 @@ public class RayCastFromPlayer : MonoBehaviour
     public EnemySpawner EnemySpawner;
     public LayerMask medallionLayer;
     public TextMeshProUGUI helpMessage;
+    public bool noMessageState = false;
 
     [Header("Room1")]
     public GameObject doorButton1;
@@ -56,14 +57,17 @@ public class RayCastFromPlayer : MonoBehaviour
     [Header("Audio")]
     public AudioClip keycardSwipeClip;
     public AudioClip DoorOpenClip;
+    public AudioClip SnipWiresClip;
 
     [Range(0f, 1f)]
     public float keycardSwipeVolume = 2f;
     public float DoorOpenVolume = 2f;
+    public float SnipWiresVolume = 2f;
 
 
     [HideInInspector]
     public bool accessGrantedPlayed = false;
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -133,11 +137,11 @@ public class RayCastFromPlayer : MonoBehaviour
     }
     void OnLookAtMedallion()
     {
-        if(InventoryScript.currentSlot == 0 && !holdingItem)
+        if(InventoryScript.currentSlot == 0 && !holdingItem && !noMessageState)
         {
             helpMessage.text = "left click to pickup";
         }
-        else if (InventoryScript.currentSlot != 0 && !holdingItem)
+        else if (InventoryScript.currentSlot != 0 && !holdingItem && !noMessageState)
         {
             helpMessage.text = "switch to open hand";
         }
@@ -194,12 +198,14 @@ public class RayCastFromPlayer : MonoBehaviour
             {
                 PickupObjectScript pickup = hit.collider.GetComponent<PickupObjectScript>();
                 MedallionID medallion = hit.collider.GetComponentInParent<MedallionID>();
+                noMessageState = true;
 
                 if (pickup != null && medallion != null)
                 {
                     pickup.PickUp();
                     heldObject = hit.collider.gameObject;
                     holdingItem = true;
+                    
 
                     switch (medallion.type)
                     {
@@ -228,6 +234,7 @@ public class RayCastFromPlayer : MonoBehaviour
         {
             heldObject.GetComponent<PickupObjectScript>().PickUp();
             holdingItem = false;
+            noMessageState = false;
             heldObject = null;
             InventoryScript.PickupMedallion("None");
         }
@@ -263,6 +270,7 @@ public class RayCastFromPlayer : MonoBehaviour
                     WiresAreCut();
                     InventoryScript.WireCuttersUsed();
                     Debug.Log("Cut");
+                    AudioSource.PlayClipAtPoint(SnipWiresClip, wireBoxCut.transform.position, SnipWiresVolume);
                 }
                 else if (hit.collider.CompareTag("DoorButton2") && InventoryScript.KeyCardEquipped())
                 {

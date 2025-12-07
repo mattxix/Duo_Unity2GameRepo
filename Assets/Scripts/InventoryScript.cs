@@ -236,11 +236,11 @@ public class InventoryScript : MonoBehaviour
     {
 
         // have Hand selected
-        if (currentSlot != 0)
-        {
-            Debug.Log("Hand is not selected — cannot pick up medallion.");
-            return;
-        }
+        //if (currentSlot != 0)
+        //{
+        //    Debug.Log("Hand is not selected — cannot pick up medallion.");
+        //    return;
+        //}
 
         medallionImages[0].enabled = false;
         medallionImages[1].enabled = false;
