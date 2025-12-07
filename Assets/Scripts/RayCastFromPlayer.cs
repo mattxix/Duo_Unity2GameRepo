@@ -53,6 +53,15 @@ public class RayCastFromPlayer : MonoBehaviour
     public ExplosiveTimer ExplosiveTimer;
     public ElevatorScript ElevatorScript;
 
+    [Header("Audio")]
+    public AudioClip keycardSwipeClip;
+    public AudioClip DoorOpenClip;
+
+    [Range(0f, 1f)]
+    public float keycardSwipeVolume = 2f;
+    public float DoorOpenVolume = 2f;
+
+
     [HideInInspector]
     public bool accessGrantedPlayed = false;
 
@@ -239,6 +248,15 @@ public class RayCastFromPlayer : MonoBehaviour
                     anim1.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 2;
                     InventoryScript.KeyCardSwipped();
+
+                    // Play swipe audio once for this swipe
+                    if (keycardSwipeClip != null)
+                    {
+                        AudioSource.PlayClipAtPoint(keycardSwipeClip, transform.position, keycardSwipeVolume);
+                        AudioSource.PlayClipAtPoint(DoorOpenClip, transform.position, DoorOpenVolume);
+
+                    }
+
                 }
                 else if (hit.collider.CompareTag("WirePanel") && InventoryScript.WirecuttersEquipped())
                 {
@@ -252,14 +270,31 @@ public class RayCastFromPlayer : MonoBehaviour
                     anim2.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 3;
                     InventoryScript.KeyCardSwipped();
+
+                    // Play swipe audio once for this swipe
+                    if (keycardSwipeClip != null)
+                    {
+                        AudioSource.PlayClipAtPoint(keycardSwipeClip, transform.position, keycardSwipeVolume);
+                        AudioSource.PlayClipAtPoint(DoorOpenClip, transform.position, DoorOpenVolume);
+
+                    }
                 }
-                else if(hit.collider.CompareTag("C4Location") && InventoryScript.C4Equipped())
+                else if (hit.collider.CompareTag("C4Location") && InventoryScript.C4Equipped())
                 {
                     C4.SetActive(true);
                     InventoryScript.C4Planted();
                     ExplosiveTimer.StartExplosionTimer();
                     Debug.Log("c4Planted");
-                    EnemySpawner.currentRoom = 4;
+
+                    if (EnemySpawner != null)
+                    {
+                        Debug.Log("RayCastFromPlayer: calling EnemySpawner.RespawnAllEnemies()");
+                        EnemySpawner.RespawnAllEnemies();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("RayCastFromPlayer: EnemySpawner reference is null. Assign it in the Inspector.");
+                    }
                 }
                 else if (hit.collider.CompareTag("Lever"))
                 {

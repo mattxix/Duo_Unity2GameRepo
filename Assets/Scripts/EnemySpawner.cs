@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -94,10 +95,17 @@ public class EnemySpawner : MonoBehaviour
     }
     public void SpawnZombieRoom1()
     {
+        if (spawnLocations == null || spawnLocations.Length == 0)
+        {
+            Debug.LogWarning("SpawnZombieRoom1: no spawnLocations assigned.");
+            return;
+        }
+
         int randomIndex = Random.Range(0, spawnLocations.Length);
 
         Transform spawnPoint = spawnLocations[randomIndex];
         GameObject newEnemy = Instantiate(EnemyPrefab, spawnPoint.position, spawnPoint.rotation);
+        if (newEnemy != null && newEnemy.tag != "Enemy") newEnemy.tag = "Enemy";
         EnemyHealth respawnScript = newEnemy.GetComponent<EnemyHealth>();
         PatrolEnemy ai = newEnemy.GetComponent<PatrolEnemy>();
         if (ai != null)
@@ -105,10 +113,17 @@ public class EnemySpawner : MonoBehaviour
     }
     public void SpawnZombieRoom2()
     {
+        if (spawnLocationsRoom2 == null || spawnLocationsRoom2.Length == 0)
+        {
+            Debug.LogWarning("SpawnZombieRoom2: no spawnLocationsRoom2 assigned.");
+            return;
+        }
+
         int randomIndex = Random.Range(0, spawnLocationsRoom2.Length);
 
         Transform spawnPoint = spawnLocationsRoom2[randomIndex];
         GameObject newEnemy = Instantiate(EnemyPrefab, spawnPoint.position, spawnPoint.rotation);
+        if (newEnemy != null && newEnemy.tag != "Enemy") newEnemy.tag = "Enemy";
         EnemyHealth respawnScript = newEnemy.GetComponent<EnemyHealth>();
         PatrolEnemy ai = newEnemy.GetComponent<PatrolEnemy>();
         if (ai != null)
@@ -116,14 +131,84 @@ public class EnemySpawner : MonoBehaviour
     }
     public void SpawnZombieRoom3()
     {
+        if (spawnLocationsRoom3 == null || spawnLocationsRoom3.Length == 0)
+        {
+            Debug.LogWarning("SpawnZombieRoom3: no spawnLocationsRoom3 assigned.");
+            return;
+        }
+
         int randomIndex = Random.Range(0, spawnLocationsRoom3.Length);
 
         Transform spawnPoint = spawnLocationsRoom3[randomIndex];
         GameObject newEnemy = Instantiate(EnemyPrefab, spawnPoint.position, spawnPoint.rotation);
+        if (newEnemy != null && newEnemy.tag != "Enemy") newEnemy.tag = "Enemy";
         EnemyHealth respawnScript = newEnemy.GetComponent<EnemyHealth>();
         PatrolEnemy ai = newEnemy.GetComponent<PatrolEnemy>();
         if (ai != null)
             ai.target = player;
     } 
+
+    public void RespawnAllEnemies()
+    {
+
+        var toDestroy = new HashSet<GameObject>();
+
+        try
+        {
+            GameObject[] tagged = GameObject.FindGameObjectsWithTag("Enemy");
+            foreach (var g in tagged) if (g != null) toDestroy.Add(g);
+        }
+        catch (UnityException)
+        {
+            Debug.LogWarning("RespawnAllEnemies: 'Enemy' tag lookup failed or tag doesn't exist. Falling back to component search.");
+        }
+
+        PatrolEnemy[] patrols = FindObjectsOfType<PatrolEnemy>();
+        foreach (var p in patrols) if (p != null && p.gameObject != null) toDestroy.Add(p.gameObject);
+
+        EnemyHealth[] healths = FindObjectsOfType<EnemyHealth>();
+        foreach (var h in healths) if (h != null && h.gameObject != null) toDestroy.Add(h.gameObject);
+
+        int removed = toDestroy.Count;
+        foreach (var go in toDestroy)
+        {
+            if (go != null) Destroy(go);
+        }
+
+        Debug.Log($"RespawnAllEnemies: removed {removed} existing enemies. Spawning at every configured spawn point...");
+
+        if (Room2EnemyGroup != null) Room2EnemyGroup.SetActive(true);
+        if (Room3EnemyGroup != null) Room3EnemyGroup.SetActive(true);
+
+        int spawned = 0;
+
+        void SpawnAllIn(Transform[] arr)
+        {
+            if (arr == null || arr.Length == 0) return;
+            foreach (Transform t in arr)
+            {
+                if (t == null) continue;
+                SpawnAt(t);
+                spawned++;
+            }
+        }
+
+        SpawnAllIn(spawnLocations);
+        SpawnAllIn(spawnLocationsRoom2);
+        SpawnAllIn(spawnLocationsRoom3);
+
+    }
+
+    private void SpawnAt(Transform spawnPoint)
+    {
+        if (spawnPoint == null || EnemyPrefab == null) return;
+        GameObject newEnemy = Instantiate(EnemyPrefab, spawnPoint.position, spawnPoint.rotation);
+        if (newEnemy != null)
+        {
+            if (newEnemy.tag != "Enemy") newEnemy.tag = "Enemy";
+            PatrolEnemy ai = newEnemy.GetComponent<PatrolEnemy>();
+            if (ai != null) ai.target = player;
+        }
+    }
 
 }
