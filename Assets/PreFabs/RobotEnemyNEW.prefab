@@ -3437,7 +3437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackTransform: {fileID: 4030117693877240488}
-  attackRadius: 0.43
+  attackRadius: 0.6
   damageValue: 10
 --- !u!1 &8571919769548605767
 GameObject:

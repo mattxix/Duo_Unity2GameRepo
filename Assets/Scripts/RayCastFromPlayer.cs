@@ -17,6 +17,7 @@ public class RayCastFromPlayer : MonoBehaviour
     public GameObject heldObject;
     public EnemySpawner EnemySpawner;
     public LayerMask medallionLayer;
+    public LayerMask wireBoxLayer;
     public TextMeshProUGUI helpMessage;
     public bool noMessageState = false;
 
@@ -134,6 +135,7 @@ public class RayCastFromPlayer : MonoBehaviour
         {
             helpMessage.text = "";
         }
+
     }
     void OnLookAtMedallion()
     {
