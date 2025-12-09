@@ -26,7 +26,7 @@ public class InventoryScript : MonoBehaviour
     public GameObject medallionPrism;
 
     [Header("Inventory State")]
-    public bool hasGun = true; 
+    public bool hasGun = true;
     public bool hasC4 = true;
     public bool hasWireCutters;
     public bool hasKeyCard1;
@@ -44,7 +44,7 @@ public class InventoryScript : MonoBehaviour
     private enum MedallionType { None, Cube, Cylinder, Prism }
     private MedallionType heldMedallion = MedallionType.None;
 
-    public static int currentSlot = 1; 
+    public static int currentSlot = 1;
 
     void Start()
     {
@@ -90,7 +90,7 @@ public class InventoryScript : MonoBehaviour
         // Slot 3 - Wirecutters (only if owned)
         if (hasWireCutters)
         {
-            activeSlotTypes.Add(HotbarItemType.WireCutters);        
+            activeSlotTypes.Add(HotbarItemType.WireCutters);
             Slots[3].SetActive(true);
         }
         else Slots[3].SetActive(false);
@@ -210,9 +210,13 @@ public class InventoryScript : MonoBehaviour
     // ---------------- PICKUPS ----------------
     public void PickupWireCutters()
     {
+        // Player picked wirecutters now
         hasWireCutters = true;
         RebuildHotbar();
 
+        // If player already has a keycard:
+        // - If keycard was picked first, instruct to snip wires now.
+        // - If keycard was picked second (i.e. wirecutters were first) instruct unlock door immediately.
         if ((hasKeyCard1 || hasKeyCard2) && ObjectiveController != null)
         {
             if (keycardPickedFirst)
@@ -226,6 +230,7 @@ public class InventoryScript : MonoBehaviour
         }
         else
         {
+            // No keycard yet — standard objective: snip wires once found
             if (ObjectiveController != null)
                 ObjectiveController.MSG_SnipWires();
         }
@@ -233,29 +238,41 @@ public class InventoryScript : MonoBehaviour
 
     public void PickupKeyCard1()
     {
+        // Record whether keycard was picked before wirecutters
         keycardPickedFirst = !hasWireCutters;
 
         hasKeyCard1 = true;
         RebuildHotbar();
 
-        if (!hasWireCutters && ObjectiveController != null)
+        if (keycardPickedFirst == false && hasWireCutters == false && hasKeyCard1 == true)
         {
-            ObjectiveController.MSG_FindWireCutters();
+  
+                ObjectiveController.MSG_UnlockDoor();
         }
+        else 
+        {
 
+                ObjectiveController.MSG_FindWireCutters();
+        }
     }
 
     public void PickupKeyCard2()
     {
-        // Record if keycard was picked before wirecutters
+        // Record whether keycard was picked before wirecutters
         keycardPickedFirst = !hasWireCutters;
 
         hasKeyCard2 = true;
         RebuildHotbar();
 
-        if (!hasWireCutters && ObjectiveController != null)
+        if (hasWireCutters)
         {
-            ObjectiveController.MSG_FindWireCutters();
+            if (ObjectiveController != null)
+                ObjectiveController.MSG_UnlockDoor();
+        }
+        else
+        {
+            if (ObjectiveController != null)
+                ObjectiveController.MSG_FindWireCutters();
         }
     }
 
@@ -283,7 +300,7 @@ public class InventoryScript : MonoBehaviour
         {
             heldMedallion = MedallionType.Cylinder;
             medallionImages[2].enabled = true;
-        }    
+        }
         else if (type == "Prism")
         {
             heldMedallion = MedallionType.Prism;
@@ -316,7 +333,6 @@ public class InventoryScript : MonoBehaviour
         hasWireCutters = false;
         RebuildHotbar();
         SelectSlot(1);
-        ObjectiveController.MSG_UnlockDoor();
     }
 
     public bool KeyCardEquipped()

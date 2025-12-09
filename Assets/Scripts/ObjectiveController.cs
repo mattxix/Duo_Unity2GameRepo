@@ -36,7 +36,6 @@ public class TextDirections : MonoBehaviour
     {
         ShowObjective("Objective: snip the wires in the panel box to disable the alarm and unlock the door");
     }
-
     public void MSG_FindKeycard()
     {
         ShowObjective("Objective: Kill the main gaurd and use the keycard to unlock the door");
@@ -49,17 +48,14 @@ public class TextDirections : MonoBehaviour
     {
         ShowObjective("Objective: Parkour to the keycard located on the farthest hanging platform");
     }
-
     public void MSG_FindMedallions()
     {
         ShowObjective("Objective: Find the 3 medallions and place them in the door's interface to open it");
     }
-
     public void MSG_PlantC4()
     {
         ShowObjective("Objective: Plant the C4 and evacuate the base.");
     }
-
     public void MSG_RUN()
     {
         ShowObjective("Objective: Escape...                               RUN ");

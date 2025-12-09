@@ -29,26 +29,21 @@ public class RayCastFromPlayer : MonoBehaviour
     public GameObject wireBoxCut;
     public Light statusLight1;
     public Animator anim1;
-    bool wiresCut = false;
+    public bool wiresCut = false;
     bool KeyCard1InInventory = false;
     bool door1Unlocked = false;
 
     [Header("Room2")]
     public GameObject doorButton2;
-    //public GameObject puzzleDoor2;
     public Light statusLight2;
     public Animator anim2;
-    //bool door2Unlocked = false;
     bool KeyCard2InInventory = false;
 
     [Header("Room3")]
     public Animator anim3;
-    //public GameObject doorButton3;
-    //public GameObject puzzleDoor3;
     public bool Cube;
     public bool Cylinder;
     public bool Prism;
-    //bool door3Unlocked = false;
 
     [Header("Core")]
     public GameObject C4;
@@ -87,42 +82,27 @@ public class RayCastFromPlayer : MonoBehaviour
         if (wiresCut && KeyCard1InInventory)
         {
             statusLight1.color = Color.green;
-            //doorButton1.GetComponent<Renderer>().material.color = Color.green;
             door1Unlocked = true;
         }
         else
         {
             statusLight1.color = Color.red;
-            //doorButton1.GetComponent<Renderer>().material.color = Color.red;
             door1Unlocked = false;
         }
 
         if (KeyCard2InInventory)
         {
             statusLight2.color = Color.green;
-            //doorButton2.GetComponent<Renderer>().material.color = Color.green;
-            //door2Unlocked = true;
         }
         else
         {
             statusLight2.color = Color.red;
-            //doorButton2.GetComponent<Renderer>().material.color = Color.red;
-            //door2Unlocked = false;
         }
 
 
         if (Cube && Prism && Cylinder)
         {
-            //doorButton3.GetComponent<Renderer>().material.color = Color.green;
-            //door3Unlocked = true;
-            //puzzleDoor3.SetActive(false);
             anim3.SetTrigger("OpenDoor");
-        }
-        else
-        {
-            //doorButton3.GetComponent<Renderer>().material.color = Color.red;
-            //door3Unlocked = false;
-            //puzzleDoor3.SetActive(true);
         }
 
         RaycastHit hit;
@@ -151,8 +131,6 @@ public class RayCastFromPlayer : MonoBehaviour
         {
             helpMessage.text = "switch to open hand";
         }
-        
-
        
     }
 
@@ -167,37 +145,22 @@ public class RayCastFromPlayer : MonoBehaviour
             animAlarm.SetBool("AlarmOff", true);
         }
 
-        // If the player picked the keycard before wirecutters and currently owns a keycard,
-        // instruct them to unlock the door after snipping the wires.
-        if (InventoryScript != null && InventoryScript.keycardPickedFirst &&
-            (InventoryScript.hasKeyCard1 || InventoryScript.hasKeyCard2))
-        {
-            // Ensure ObjectiveController reference (fallback)
-            if (ObjectiveController == null)
-                ObjectiveController = FindObjectOfType<TextDirections>();
+        TextDirections controller = ObjectiveController;
 
-            if (ObjectiveController != null)
+        if (controller != null)
+        {
+            if (InventoryScript != null && InventoryScript.keycardPickedFirst
+                && (InventoryScript.hasKeyCard1 || InventoryScript.hasKeyCard2))
             {
-                ObjectiveController.MSG_UnlockDoor();
+                controller.MSG_UnlockDoor();
             }
-        }
-        else
-        {
-            // Default next objective (existing behavior)
-            if (ObjectiveController == null)
-                ObjectiveController = FindObjectOfType<TextDirections>();
-
-            if (ObjectiveController != null)
+            else
             {
-                ObjectiveController.MSG_FindKeycard();
+                controller.MSG_FindKeycard();
             }
         }
     }
 
-    //public void HaveWireCutters()
-    //{
-    //    wireCuttersInInventory = true;
-    //}
     public void HaveKeyCard1()
     {
         KeyCard1InInventory = true;
@@ -283,12 +246,10 @@ public class RayCastFromPlayer : MonoBehaviour
             {
                 if (hit.collider.CompareTag("DoorButton") && door1Unlocked && InventoryScript.KeyCardEquipped())
                 {
-                    //puzzleDoor1.SetActive(false);
                     anim1.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 2;
                     InventoryScript.KeyCardSwipped();
                     ObjectiveController.MSG_FindKeycard2();
-                    // Play swipe audio once for this swipe
                     if (keycardSwipeClip != null)
                     {
                         AudioSource.PlayClipAtPoint(keycardSwipeClip, transform.position, keycardSwipeVolume);
@@ -303,22 +264,18 @@ public class RayCastFromPlayer : MonoBehaviour
                     InventoryScript.WireCuttersUsed();
                     Debug.Log("Cut");
                     AudioSource.PlayClipAtPoint(SnipWiresClip, wireBoxCut.transform.position, SnipWiresVolume);
-                    ObjectiveController.MSG_FindKeycard();
 
                 }
                 else if (hit.collider.CompareTag("DoorButton2") && InventoryScript.KeyCardEquipped())
                 {
-                    //puzzleDoor2.SetActive(false);
                     anim2.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 3;
                     InventoryScript.KeyCardSwipped();
                     ObjectiveController.MSG_FindMedallions();
-                    // Play swipe audio once for this swipe
                     if (keycardSwipeClip != null)
                     {
                         AudioSource.PlayClipAtPoint(keycardSwipeClip, transform.position, keycardSwipeVolume);
                         AudioSource.PlayClipAtPoint(DoorOpenClip, transform.position, DoorOpenVolume);
-
                     }
                 }
                 else if (hit.collider.CompareTag("C4Location") && InventoryScript.C4Equipped())
@@ -345,8 +302,6 @@ public class RayCastFromPlayer : MonoBehaviour
                 }
 
             }
-
         }
     }
-
 }
