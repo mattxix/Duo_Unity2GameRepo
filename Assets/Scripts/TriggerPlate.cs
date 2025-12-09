@@ -7,6 +7,8 @@ public class TriggerPlate : MonoBehaviour
     public string objTag;         
     public string requiredName;
 
+    public TextDirections ObjectiveController;
+
     [Header("Snapping Settings")]
     public Transform snapPoint;
     public float snapRadius = 0.5f;
@@ -72,6 +74,7 @@ public class TriggerPlate : MonoBehaviour
 
                 }
                 raycastScript.accessGrantedPlayed = true;
+                ObjectiveController.MSG_PlantC4();
                 Debug.Log("Access Granted");
 
             }

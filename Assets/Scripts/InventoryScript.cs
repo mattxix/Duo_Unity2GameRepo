@@ -10,9 +10,8 @@ public class InventoryScript : MonoBehaviour
 
     private List<HotbarItemType> activeSlotTypes = new List<HotbarItemType>();
 
-
-
     public RayCastFromPlayer RayCastScript;
+    public TextDirections ObjectiveController; // Add this at the top with your other public fields
 
     [Header("Main Items")]
     public GameObject gun;
@@ -20,7 +19,6 @@ public class InventoryScript : MonoBehaviour
     public GameObject wireCutters;
     public GameObject keyCard1;
     public GameObject keyCard2;
-
 
     [Header("Medallions (Hand Slot)")]
     public GameObject medallionCube;
@@ -34,12 +32,14 @@ public class InventoryScript : MonoBehaviour
     public bool hasKeyCard1;
     public bool hasKeyCard2;
 
+    [HideInInspector]
+    public bool keycardPickedFirst = false;
+
     [Header("InventoryIcons")]
     public GameObject[] Slots;
 
     [Header("InventoryIcons")]
     public Image[] medallionImages;
-
 
     private enum MedallionType { None, Cube, Cylinder, Prism }
     private MedallionType heldMedallion = MedallionType.None;
@@ -64,7 +64,6 @@ public class InventoryScript : MonoBehaviour
         }
     }
 
-
     void RebuildHotbar()
     {
         activeSlotTypes.Clear();
@@ -88,11 +87,10 @@ public class InventoryScript : MonoBehaviour
             Slots[2].SetActive(false);
         }
 
-
         // Slot 3 - Wirecutters (only if owned)
         if (hasWireCutters)
         {
-            activeSlotTypes.Add(HotbarItemType.WireCutters);
+            activeSlotTypes.Add(HotbarItemType.WireCutters);        
             Slots[3].SetActive(true);
         }
         else Slots[3].SetActive(false);
@@ -148,10 +146,6 @@ public class InventoryScript : MonoBehaviour
         }
     }
 
-
-
-
-
     void DisableAllItems()
     {
         gun.SetActive(false);
@@ -171,7 +165,6 @@ public class InventoryScript : MonoBehaviour
     {
         currentSlot = 0;
         DisableAllItems();
-
     }
 
     // ---------------- WEAPON / TOOL SLOTS ----------------
@@ -218,23 +211,57 @@ public class InventoryScript : MonoBehaviour
     public void PickupWireCutters()
     {
         hasWireCutters = true;
-        RebuildHotbar(); 
+        RebuildHotbar();
+
+        if ((hasKeyCard1 || hasKeyCard2) && ObjectiveController != null)
+        {
+            if (keycardPickedFirst)
+            {
+                ObjectiveController.MSG_SnipWires();
+            }
+            else
+            {
+                ObjectiveController.MSG_UnlockDoor();
+            }
+        }
+        else
+        {
+            if (ObjectiveController != null)
+                ObjectiveController.MSG_SnipWires();
+        }
     }
+
     public void PickupKeyCard1()
     {
+        keycardPickedFirst = !hasWireCutters;
+
         hasKeyCard1 = true;
-        RebuildHotbar(); 
+        RebuildHotbar();
+
+        if (!hasWireCutters && ObjectiveController != null)
+        {
+            ObjectiveController.MSG_FindWireCutters();
+        }
+
     }
+
     public void PickupKeyCard2()
     {
+        // Record if keycard was picked before wirecutters
+        keycardPickedFirst = !hasWireCutters;
+
         hasKeyCard2 = true;
-        RebuildHotbar(); 
+        RebuildHotbar();
+
+        if (!hasWireCutters && ObjectiveController != null)
+        {
+            ObjectiveController.MSG_FindWireCutters();
+        }
     }
 
     // MEDALLION PICKUP (ONE AT A TIME)
     public void PickupMedallion(string type)
     {
-
         // have Hand selected
         //if (currentSlot != 0)
         //{
@@ -265,18 +292,11 @@ public class InventoryScript : MonoBehaviour
         else
         {
             medallionImages[0].enabled = true;
-
         }
 
-
-
         Debug.Log("Picked up " + heldMedallion + " Medallion");
-
-     
     }
 
-
-    
     public void DropMedallion()
     {
         heldMedallion = MedallionType.None;
@@ -296,6 +316,7 @@ public class InventoryScript : MonoBehaviour
         hasWireCutters = false;
         RebuildHotbar();
         SelectSlot(1);
+        ObjectiveController.MSG_UnlockDoor();
     }
 
     public bool KeyCardEquipped()
@@ -314,8 +335,8 @@ public class InventoryScript : MonoBehaviour
             hasKeyCard2 = false;
         RebuildHotbar();
         SelectSlot(1);
-
     }
+
     public bool C4Equipped()
     {
         int index = InventoryScript.currentSlot;  // current selected slot
@@ -323,6 +344,7 @@ public class InventoryScript : MonoBehaviour
             return activeSlotTypes[index] == HotbarItemType.C4;
         return false;
     }
+
     public void C4Planted()
     {
         hasC4 = false;
@@ -330,6 +352,5 @@ public class InventoryScript : MonoBehaviour
         c4.SetActive(false);
         RebuildHotbar();
         SelectSlot(1);
-
     }
 }

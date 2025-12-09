@@ -21,14 +21,14 @@ public class RayCastFromPlayer : MonoBehaviour
     public TextMeshProUGUI helpMessage;
     public bool noMessageState = false;
 
+    public TextDirections ObjectiveController;
+
     [Header("Room1")]
     public GameObject doorButton1;
-    //public GameObject puzzleDoor1;
     public GameObject wireBoxUncut;
     public GameObject wireBoxCut;
     public Light statusLight1;
     public Animator anim1;
-    //bool wireCuttersInInventory = false;
     bool wiresCut = false;
     bool KeyCard1InInventory = false;
     bool door1Unlocked = false;
@@ -56,11 +56,13 @@ public class RayCastFromPlayer : MonoBehaviour
     public ElevatorScript ElevatorScript;
 
     [Header("Audio")]
+    public AudioClip AlarmClip;
     public AudioClip keycardSwipeClip;
     public AudioClip DoorOpenClip;
     public AudioClip SnipWiresClip;
 
     [Range(0f, 1f)]
+    public float AlarmVolume = 1f;
     public float keycardSwipeVolume = 2f;
     public float DoorOpenVolume = 2f;
     public float SnipWiresVolume = 2f;
@@ -70,10 +72,12 @@ public class RayCastFromPlayer : MonoBehaviour
     public bool accessGrantedPlayed = false;
     
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // Internal reference to the alarm AudioSource
+    private AudioSource alarmAudioSource;
+
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -161,6 +165,32 @@ public class RayCastFromPlayer : MonoBehaviour
         if (animAlarm != null)
         {
             animAlarm.SetBool("AlarmOff", true);
+        }
+
+        // If the player picked the keycard before wirecutters and currently owns a keycard,
+        // instruct them to unlock the door after snipping the wires.
+        if (InventoryScript != null && InventoryScript.keycardPickedFirst &&
+            (InventoryScript.hasKeyCard1 || InventoryScript.hasKeyCard2))
+        {
+            // Ensure ObjectiveController reference (fallback)
+            if (ObjectiveController == null)
+                ObjectiveController = FindObjectOfType<TextDirections>();
+
+            if (ObjectiveController != null)
+            {
+                ObjectiveController.MSG_UnlockDoor();
+            }
+        }
+        else
+        {
+            // Default next objective (existing behavior)
+            if (ObjectiveController == null)
+                ObjectiveController = FindObjectOfType<TextDirections>();
+
+            if (ObjectiveController != null)
+            {
+                ObjectiveController.MSG_FindKeycard();
+            }
         }
     }
 
@@ -257,7 +287,7 @@ public class RayCastFromPlayer : MonoBehaviour
                     anim1.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 2;
                     InventoryScript.KeyCardSwipped();
-
+                    ObjectiveController.MSG_FindKeycard2();
                     // Play swipe audio once for this swipe
                     if (keycardSwipeClip != null)
                     {
@@ -273,6 +303,8 @@ public class RayCastFromPlayer : MonoBehaviour
                     InventoryScript.WireCuttersUsed();
                     Debug.Log("Cut");
                     AudioSource.PlayClipAtPoint(SnipWiresClip, wireBoxCut.transform.position, SnipWiresVolume);
+                    ObjectiveController.MSG_FindKeycard();
+
                 }
                 else if (hit.collider.CompareTag("DoorButton2") && InventoryScript.KeyCardEquipped())
                 {
@@ -280,7 +312,7 @@ public class RayCastFromPlayer : MonoBehaviour
                     anim2.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 3;
                     InventoryScript.KeyCardSwipped();
-
+                    ObjectiveController.MSG_FindMedallions();
                     // Play swipe audio once for this swipe
                     if (keycardSwipeClip != null)
                     {
@@ -295,6 +327,7 @@ public class RayCastFromPlayer : MonoBehaviour
                     InventoryScript.C4Planted();
                     ExplosiveTimer.StartExplosionTimer();
                     Debug.Log("c4Planted");
+                    ObjectiveController.MSG_RUN();
 
                     if (EnemySpawner != null)
                     {

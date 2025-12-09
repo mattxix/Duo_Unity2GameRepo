@@ -1,3 +1,4 @@
+using UnityEditor.Build.Content;
 using UnityEngine;
 using static InventoryScript;
 
@@ -7,6 +8,8 @@ public class Pickup : MonoBehaviour
     public GameObject targetPickupObject;
     public RayCastFromPlayer RayCastScript;
     public InventoryScript inventoryScript;
+
+    public TextDirections ObjectiveController;
 
     [Header("Audio")]
     public AudioSource AudioSource;
