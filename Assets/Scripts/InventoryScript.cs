@@ -246,12 +246,12 @@ public class InventoryScript : MonoBehaviour
 
         if (keycardPickedFirst == false && hasWireCutters == false && hasKeyCard1 == true)
         {
-  
+                if (ObjectiveController != null)
                 ObjectiveController.MSG_UnlockDoor();
         }
         else 
         {
-
+                if(ObjectiveController != null)
                 ObjectiveController.MSG_FindWireCutters();
         }
     }

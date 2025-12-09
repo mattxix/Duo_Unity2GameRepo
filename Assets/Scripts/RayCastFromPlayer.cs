@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using TMPro;
 using static InventoryScript;
 using static MedallionID;
@@ -20,6 +21,7 @@ public class RayCastFromPlayer : MonoBehaviour
     public LayerMask wireBoxLayer;
     public TextMeshProUGUI helpMessage;
     public bool noMessageState = false;
+    public TutorialHelperScript tutorialHelper;
 
     public TextDirections ObjectiveController;
 
@@ -103,6 +105,7 @@ public class RayCastFromPlayer : MonoBehaviour
         if (Cube && Prism && Cylinder)
         {
             anim3.SetTrigger("OpenDoor");
+
         }
 
         RaycastHit hit;
@@ -249,6 +252,7 @@ public class RayCastFromPlayer : MonoBehaviour
                     anim1.SetTrigger("OpenDoor");
                     EnemySpawner.currentRoom = 2;
                     InventoryScript.KeyCardSwipped();
+                    if(ObjectiveController != null)
                     ObjectiveController.MSG_FindKeycard2();
                     if (keycardSwipeClip != null)
                     {
@@ -262,8 +266,15 @@ public class RayCastFromPlayer : MonoBehaviour
                 {
                     WiresAreCut();
                     InventoryScript.WireCuttersUsed();
+
+                    var tutorialHelper = Object.FindFirstObjectByType<TutorialHelperScript>();
+                    if (tutorialHelper != null)
+                    {
+                        tutorialHelper.WiresCut();
+                    }
                     Debug.Log("Cut");
                     AudioSource.PlayClipAtPoint(SnipWiresClip, wireBoxCut.transform.position, SnipWiresVolume);
+                    
 
                 }
                 else if (hit.collider.CompareTag("DoorButton2") && InventoryScript.KeyCardEquipped())
@@ -284,17 +295,21 @@ public class RayCastFromPlayer : MonoBehaviour
                     InventoryScript.C4Planted();
                     ExplosiveTimer.StartExplosionTimer();
                     Debug.Log("c4Planted");
+                    if(tutorialHelper != null)
+                    tutorialHelper.PlantedBomb();
+
+                    if(ObjectiveController != null)
                     ObjectiveController.MSG_RUN();
 
-                    if (EnemySpawner != null)
-                    {
-                        Debug.Log("RayCastFromPlayer: calling EnemySpawner.RespawnAllEnemies()");
-                        EnemySpawner.RespawnAllEnemies();
-                    }
-                    else
-                    {
-                        Debug.LogWarning("RayCastFromPlayer: EnemySpawner reference is null. Assign it in the Inspector.");
-                    }
+                    //if (EnemySpawner != null)
+                    //{
+                    //    Debug.Log("RayCastFromPlayer: calling EnemySpawner.RespawnAllEnemies()");
+                    //    EnemySpawner.RespawnAllEnemies();
+                    //}
+                    //else
+                    //{
+                    //    Debug.LogWarning("RayCastFromPlayer: EnemySpawner reference is null. Assign it in the Inspector.");
+                    //}
                 }
                 else if (hit.collider.CompareTag("Lever"))
                 {

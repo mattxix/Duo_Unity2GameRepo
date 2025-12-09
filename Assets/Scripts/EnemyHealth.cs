@@ -8,6 +8,7 @@ public class EnemyHealth : MonoBehaviour
     public float currentHealth;
     public GameObject healthBarParent;
     public DropKeyCard dropKeyCardScript;
+    public TutorialHelperScript tutorialHelperScript;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -27,6 +28,7 @@ public class EnemyHealth : MonoBehaviour
         if (currentHealth <= 0)
         {
             //enemy Dies
+            
             Dead();
         }
     }
@@ -36,6 +38,10 @@ public class EnemyHealth : MonoBehaviour
         if (gameObject.name == "RobotGuardEnemy")
         {
             dropKeyCardScript.DropKeyCard1();
+        }
+        if (gameObject.name == "TutRobotGuardEnemy" && tutorialHelperScript != null)
+        {
+            tutorialHelperScript.StartSceneFive();
         }
         Destroy(healthBarParent);
         Destroy(gameObject);
