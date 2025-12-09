@@ -28,7 +28,10 @@ public class TextDirections : MonoBehaviour
         currentRoutine = StartCoroutine(TypeAndFade(message));
     }
 
-
+    public void MSG_FindWireCutters()
+    {
+        ShowObjective("Objective: Find the wire cutters");
+    }
     public void MSG_SnipWires()
     {
         ShowObjective("Objective: snip the wires in the panel box to disable the alarm and unlock the door");
@@ -37,6 +40,10 @@ public class TextDirections : MonoBehaviour
     public void MSG_FindKeycard()
     {
         ShowObjective("Objective: Kill the main gaurd and use the keycard to unlock the door");
+    }
+    public void MSG_UnlockDoor()
+    {
+        ShowObjective("Objective: Use the keycard to open the door");
     }
     public void MSG_FindKeycard2()
     {

@@ -24,12 +24,10 @@ public class RayCastFromPlayer : MonoBehaviour
 
     [Header("Room1")]
     public GameObject doorButton1;
-    //public GameObject puzzleDoor1;
     public GameObject wireBoxUncut;
     public GameObject wireBoxCut;
     public Light statusLight1;
     public Animator anim1;
-    //bool wireCuttersInInventory = false;
     bool wiresCut = false;
     bool KeyCard1InInventory = false;
     bool door1Unlocked = false;
@@ -167,14 +165,30 @@ public class RayCastFromPlayer : MonoBehaviour
             animAlarm.SetBool("AlarmOff", true);
         }
 
-
-        if (ObjectiveController != null)
+        // If the player picked the keycard before wirecutters and currently owns a keycard,
+        // instruct them to unlock the door after snipping the wires.
+        if (InventoryScript != null && InventoryScript.keycardPickedFirst &&
+            (InventoryScript.hasKeyCard1 || InventoryScript.hasKeyCard2))
         {
-            ObjectiveController.MSG_FindKeycard();
+            // Ensure ObjectiveController reference (fallback)
+            if (ObjectiveController == null)
+                ObjectiveController = FindObjectOfType<TextDirections>();
+
+            if (ObjectiveController != null)
+            {
+                ObjectiveController.MSG_UnlockDoor();
+            }
         }
         else
         {
-            Debug.LogWarning("ObjectiveController not assigned and no TextDirections found in scene.");
+            // Default next objective (existing behavior)
+            if (ObjectiveController == null)
+                ObjectiveController = FindObjectOfType<TextDirections>();
+
+            if (ObjectiveController != null)
+            {
+                ObjectiveController.MSG_FindKeycard();
+            }
         }
     }
 
