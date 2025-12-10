@@ -1,15 +1,18 @@
 using UnityEditor.Build.Content;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static InventoryScript;
 
 public class Pickup : MonoBehaviour
 {
     ItemCollector collector; //Will be used for inventory later
     public GameObject targetPickupObject;
+    public TutorialHelperScript tutorialHelper;
     public RayCastFromPlayer RayCastScript;
     public InventoryScript inventoryScript;
 
     public TextDirections ObjectiveController;
+
 
     [Header("Audio")]
     public AudioSource AudioSource;
@@ -26,6 +29,7 @@ public class Pickup : MonoBehaviour
     void Update()
     {
         //transform.Rotate(0, 0, 1);
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -38,6 +42,7 @@ public class Pickup : MonoBehaviour
                 //RayCastScript.HaveWireCutters();
                 Debug.Log("PickedUpWireCutters");
                 inventoryScript.PickupWireCutters();
+                
             }
             else if (targetPickupObject.CompareTag("KeyCard1"))
             {
@@ -45,6 +50,7 @@ public class Pickup : MonoBehaviour
                 RayCastScript.HaveKeyCard1();
                 Debug.Log("PickedUpKeyCard1");
                 inventoryScript.PickupKeyCard1();
+                
             }
             else if(targetPickupObject.CompareTag("KeyCard2"))
             {
