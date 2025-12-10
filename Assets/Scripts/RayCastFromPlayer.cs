@@ -32,6 +32,7 @@ public class RayCastFromPlayer : MonoBehaviour
     public bool wiresCut = false;
     bool KeyCard1InInventory = false;
     bool door1Unlocked = false;
+    public AudioClip AlarmSound;
 
     [Header("Room2")]
     public GameObject doorButton2;
@@ -72,7 +73,17 @@ public class RayCastFromPlayer : MonoBehaviour
 
     void Start()
     {
-
+        // Play the alarm sound on loop at game start
+        if (AlarmClip != null)
+        {
+            alarmAudioSource = gameObject.AddComponent<AudioSource>();
+            alarmAudioSource.clip = AlarmClip;
+            alarmAudioSource.loop = true;
+            alarmAudioSource.volume = AlarmVolume;
+            alarmAudioSource.playOnAwake = false;
+            alarmAudioSource.spatialBlend = 0f; // 2D sound
+            alarmAudioSource.Play();
+        }
     }
 
     // Update is called once per frame
@@ -143,6 +154,12 @@ public class RayCastFromPlayer : MonoBehaviour
         if (animAlarm != null)
         {
             animAlarm.SetBool("AlarmOff", true);
+        }
+
+        // Stop the alarm sound
+        if (alarmAudioSource != null && alarmAudioSource.isPlaying)
+        {
+            alarmAudioSource.Stop();
         }
 
         TextDirections controller = ObjectiveController;

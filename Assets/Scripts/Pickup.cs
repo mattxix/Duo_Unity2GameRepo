@@ -52,6 +52,7 @@ public class Pickup : MonoBehaviour
                 RayCastScript.HaveKeyCard2();
                 Debug.Log("PickedUpKeyCard2");
                 inventoryScript.PickupKeyCard2();
+                ObjectiveController.MSG_UnlockDoor();
             }
             AudioSource.PlayOneShot(PickupSound, PickupSoundVolume);
 
