@@ -217,7 +217,7 @@ public class InventoryScript : MonoBehaviour
         // If player already has a keycard:
         // - If keycard was picked first, instruct to snip wires now.
         // - If keycard was picked second (i.e. wirecutters were first) instruct unlock door immediately.
-        if ((hasKeyCard1 || hasKeyCard2) && ObjectiveController != null)
+        if (hasKeyCard1 && ObjectiveController != null)
         {
             if (keycardPickedFirst)
             {
@@ -244,36 +244,37 @@ public class InventoryScript : MonoBehaviour
         hasKeyCard1 = true;
         RebuildHotbar();
 
-        if (keycardPickedFirst == false && hasWireCutters == false && hasKeyCard1 == true)
-        {
-                if (ObjectiveController != null)
-                ObjectiveController.MSG_UnlockDoor();
-        }
-        else 
-        {
-                if(ObjectiveController != null)
-                ObjectiveController.MSG_FindWireCutters();
-        }
-    }
-
-    public void PickupKeyCard2()
-    {
-        // Record whether keycard was picked before wirecutters
-        keycardPickedFirst = !hasWireCutters;
-
-        hasKeyCard2 = true;
-        RebuildHotbar();
-
-        if (hasWireCutters)
+        // If wires are cut and the player has KeyCard1, show unlock door objective
+        if (RayCastScript != null && RayCastScript.wiresCut && hasKeyCard1)
         {
             if (ObjectiveController != null)
                 ObjectiveController.MSG_UnlockDoor();
+        }
+        else if(hasWireCutters == true && hasKeyCard1 && RayCastScript.wiresCut == false)
+        {
+            if (ObjectiveController != null)
+                ObjectiveController.MSG_SnipWires();
         }
         else
         {
             if (ObjectiveController != null)
                 ObjectiveController.MSG_FindWireCutters();
         }
+    }
+
+    public void PickupKeyCard2()
+    {
+        keycardPickedFirst = !hasWireCutters;
+
+        hasKeyCard2 = true;
+        RebuildHotbar();
+            if (ObjectiveController != null)
+            { 
+                ObjectiveController.MSG_UnlockDoor();
+            }
+               
+     
+  
     }
 
     // MEDALLION PICKUP (ONE AT A TIME)

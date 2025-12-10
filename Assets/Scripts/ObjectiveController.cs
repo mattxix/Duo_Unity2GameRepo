@@ -58,7 +58,7 @@ public class TextDirections : MonoBehaviour
     }
     public void MSG_RUN()
     {
-        ShowObjective("Objective: Escape...");
+        ShowObjective("Objective: Goodwork. Navigate to the exit.");
     }
 
     public void MSG_CustomAndHold(string message, float holdSeconds)
