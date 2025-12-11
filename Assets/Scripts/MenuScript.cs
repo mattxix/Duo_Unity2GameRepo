@@ -153,7 +153,7 @@ public class MenuScript : MonoBehaviour
                 SetActiveCamera(null);
                 yield return null;
 
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(1);
                 yield break;
             }
         }
@@ -185,7 +185,7 @@ public class MenuScript : MonoBehaviour
     public void MainMenu()
     {
         SetActiveCamera(cam1);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 
     public void Instructions()

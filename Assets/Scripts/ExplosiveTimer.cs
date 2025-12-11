@@ -64,7 +64,7 @@ public class ExplosiveTimer : MonoBehaviour
         AudioSourcePlayer.PlayOneShot(explosion, explosionVolume);
         StartCoroutine(Fade(0f, 1f));
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
     IEnumerator Fade(float startAlpha, float endAlpha)
     {

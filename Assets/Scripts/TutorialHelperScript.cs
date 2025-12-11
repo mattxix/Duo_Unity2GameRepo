@@ -207,7 +207,7 @@ public class TutorialHelperScript : MonoBehaviour
     {
         StartCoroutine(Fade(0f, 1f));
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
     IEnumerator Fade(float startAlpha, float endAlpha)
     {
