@@ -200,6 +200,8 @@ public class MenuScript : MonoBehaviour
     {
         SetActiveCamera(cam3);
         StartCoroutine(DelayedLoad(4, 2));
+        SceneManager.LoadScene(4);
+
     }
 
     IEnumerator DelayedLoad(int sceneIndex, float delay)
