@@ -14,6 +14,7 @@ public class WeaponScript : MonoBehaviour
     public Animator anim;
     public AudioSource audioSource; 
     public AudioClip gunFireClip;
+    public Light muzzleFlash;
 
     [Header("Scope")]
     public Camera playerCam;
@@ -60,10 +61,19 @@ public class WeaponScript : MonoBehaviour
         {
             audioSource.PlayOneShot(gunFireClip);
             anim.SetTrigger("Shoot");
+            StartCoroutine(Flash());
+            
             //StartCoroutine(Recoil());
             Debug.Log("shot");
             Shoot();
         }
+    }
+
+    IEnumerator Flash()
+    {
+        muzzleFlash.enabled = true;
+        yield return new WaitForSeconds(.05f);
+        muzzleFlash.enabled = false;
     }
 
     public void AimIn(InputAction.CallbackContext ctx)

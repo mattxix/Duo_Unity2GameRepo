@@ -30,6 +30,8 @@ public class MenuScript : MonoBehaviour
 
     void Start()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         // prepare array used by the random picker (ignore null entries)
         var list = new System.Collections.Generic.List<Camera>();
         if (cam1 != null) list.Add(cam1);
@@ -112,6 +114,9 @@ public class MenuScript : MonoBehaviour
         }
 
         SetActiveCamera(camStart);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
 
         // Try Animator first (Mecanim)
         Animator animator = camStart.GetComponent<Animator>();
@@ -147,6 +152,7 @@ public class MenuScript : MonoBehaviour
                 // Disable all cameras immediately to avoid showing camStart POV, then load next frame
                 SetActiveCamera(null);
                 yield return null;
+
                 SceneManager.LoadScene(0);
                 yield break;
             }
@@ -184,6 +190,8 @@ public class MenuScript : MonoBehaviour
 
     public void Instructions()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         SetActiveCamera(cam2);
         StartCoroutine(DelayedLoad(2, 2));
     }
@@ -191,7 +199,7 @@ public class MenuScript : MonoBehaviour
     public void Credits()
     {
         SetActiveCamera(cam3);
-        StartCoroutine(DelayedLoad(3, 2));
+        StartCoroutine(DelayedLoad(4, 2));
     }
 
     IEnumerator DelayedLoad(int sceneIndex, float delay)

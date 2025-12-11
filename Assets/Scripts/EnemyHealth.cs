@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -9,6 +11,12 @@ public class EnemyHealth : MonoBehaviour
     public GameObject healthBarParent;
     public DropKeyCard dropKeyCardScript;
     public TutorialHelperScript tutorialHelperScript;
+    public Animator anim;
+    public AudioSource audioSource;
+    public AudioClip hitSound;
+    public NavMeshAgent navMeshAgent;
+    public BoxCollider boxCollider;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -24,6 +32,10 @@ public class EnemyHealth : MonoBehaviour
         {
             currentHealth -= damage;
             healthBar.fillAmount = currentHealth / enemyHealth;
+            Debug.Log("Play");
+            anim.ResetTrigger("Hit");
+            anim.SetTrigger("Hit");
+            audioSource.PlayOneShot(hitSound, .18f);
         }
         if (currentHealth <= 0)
         {
@@ -44,6 +56,16 @@ public class EnemyHealth : MonoBehaviour
             tutorialHelperScript.StartSceneFive();
         }
         Destroy(healthBarParent);
-        Destroy(gameObject);
+        StartCoroutine(DeathAni());
+        
     }
+
+    IEnumerator DeathAni()
+    {
+        navMeshAgent.enabled = false;
+        boxCollider.enabled = false;
+        anim.SetTrigger("Death");
+        yield return new WaitForSeconds(3.1f);
+        Destroy(gameObject);
+    }    
 }

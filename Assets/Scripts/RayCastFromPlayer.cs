@@ -55,15 +55,21 @@ public class RayCastFromPlayer : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip AlarmClip;
+    public AudioClip AlarmShutDown;
     public AudioClip keycardSwipeClip;
     public AudioClip DoorOpenClip;
     public AudioClip SnipWiresClip;
+    public AudioSource PlayerAudioSource;
+    public AudioClip MedallionPickUpSound;
 
     [Range(0f, 1f)]
     public float AlarmVolume = 1f;
+    public float ShutDownVolume = 8f;
+
     public float keycardSwipeVolume = 2f;
     public float DoorOpenVolume = 2f;
     public float SnipWiresVolume = 2f;
+    public float MedPickUpVolume = 2f;
 
 
     [HideInInspector]
@@ -157,12 +163,14 @@ public class RayCastFromPlayer : MonoBehaviour
         if (animAlarm != null)
         {
             animAlarm.SetBool("AlarmOff", true);
+            
         }
 
         // Stop the alarm sound
         if (alarmAudioSource != null && alarmAudioSource.isPlaying)
         {
             alarmAudioSource.Stop();
+            alarmAudioSource.PlayOneShot(AlarmShutDown, ShutDownVolume);
         }
 
         TextDirections controller = ObjectiveController;
@@ -218,6 +226,7 @@ public class RayCastFromPlayer : MonoBehaviour
                 if (pickup != null && medallion != null)
                 {
                     pickup.PickUp();
+                    PlayerAudioSource.PlayOneShot(MedallionPickUpSound, MedPickUpVolume);
                     heldObject = hit.collider.gameObject;
                     holdingItem = true;
                     
